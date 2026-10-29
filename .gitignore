@@ -1,0 +1,8 @@
+.DS_Store
+
+# Agent scratch space for downloads and conversions. Keep the directory; ignore contents.
+tmp/*
+!tmp/.gitkeep
+
+# Obsidian workspace state. Remove this line if you want to commit your vault settings.
+.obsidian/
