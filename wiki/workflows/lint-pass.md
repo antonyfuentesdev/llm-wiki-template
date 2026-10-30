@@ -35,11 +35,11 @@ the pages created or modified come from your own work, or `git status` and
 
 ## Steps
 
-1. **Run the mechanical checks.** Broken relative links and footnote targets, numbered
-   footnotes, missing frontmatter fields, pages missing from their index, orphans (no
-   inbound link from a non-index page), registry vs disk, and the raw-integrity commands
-   from AGENTS.md §10. A short throwaway script in `tmp/` is fine for link checks on a large
-   wiki. → verify: each check produced a count, even if zero.
+1. **Run the mechanical checks** with `python3 scripts/check-wiki.py`: links and anchors,
+   footnote quotes, numbered footnotes, frontmatter, template leftovers, orphans, index
+   listings, and uncommitted raw changes. Then check what it doesn't: registry vs disk, and
+   the history command from AGENTS.md §10. In a scoped pass, report only findings on pages
+   in scope. → verify: the script ran, and each finding is in the report or explained.
 2. **Run the judgment checks.** Contradictions, stale claims, unsourced claims (skip workflow
    pages), missing pages, missing cross-references, gaps. In a scoped pass, compare the
    touched pages against their neighbors; in a full pass, also compare topic pages across

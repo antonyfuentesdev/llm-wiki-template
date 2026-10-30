@@ -3,10 +3,9 @@
 A personal knowledge base. The human curates sources and asks questions. You read,
 summarize, cross-reference, file, and keep the bookkeeping straight.
 
-This file is the contract. It works with any coding agent that can read and write files;
-use whatever fetch and search tools your harness provides. Step-by-step procedures live in
-[wiki/workflows/](wiki/workflows/index.md). Rationale lives in [PLAN.md](PLAN.md). On any
-conflict, this file wins, except that [preferences.md](preferences.md) overrides its
+This file is the contract, for any coding agent that can read and write files. Procedures
+live in [wiki/workflows/](wiki/workflows/index.md); rationale in [PLAN.md](PLAN.md). On any
+conflict this file wins, except that [preferences.md](preferences.md) overrides its
 defaults. No preference can override §1 (append-only raw) or §7 (provenance).
 
 ---
@@ -18,9 +17,8 @@ defaults. No preference can override §1 (append-only raw) or §7 (provenance).
   partition you might file into. Feed batches also read [signal.md](signal.md).
 - **Query:** read [index.md](index.md), then the relevant partition indexes (§8).
 - **Lint or restructure:** read [lint.md](lint.md) and the registry.
-- **Tiny tasks** (typo, a question about this file): preferences only.
-
-Reuse what you've already read this session unless it may have changed.
+- **Tiny tasks** (typo, a question about this file): preferences only. Reuse what you've
+  read this session unless it may have changed.
 
 ## 1. The inviolable rule
 
@@ -46,6 +44,7 @@ log.md                          append-only chronological record
 lint.md                         health-check checklist
 _templates/                     copy these rather than improvising structure
 examples/                       optional procedures and a worked example; not part of the wiki
+scripts/check-wiki.py           the mechanical lint checks
 inbox/                          where the human drops files to ingest; not raw, may be emptied
 tmp/                            scratch space, git-ignored
 wiki/
@@ -57,8 +56,7 @@ wiki/
     *.md                        entity, concept, topic, question pages
 ```
 
-The scaffold ships three partitions: `general`, `projects`, and `workflows` (procedures for
-operating this wiki).
+The scaffold ships `general`, `projects`, and `workflows` (how to operate this wiki).
 
 ## 3. Partitions
 
@@ -85,12 +83,11 @@ Two gates, both required:
    artifact of ingest order.
 
 **Proposals surface only during lint, never mid-ingest. Never restructure without
-approval.** A direct request from the human counts as approval, but you still write the case
-for the registry entry. Once approved: register it in `partitions.md`, create
-`wiki/<name>/` from `_templates/partition-index.md` plus `raw/` and `sources/` (each with a
-`.gitkeep`), move the clustered pages and their raw files with `git mv`, fix every inbound
-link, update the root index, and log a `restructure` entry. A `git mv` of raw files during
-an approved restructure is the only permitted change to `raw/`; content must not change.
+approval.** A direct request counts as approval; you still write the registry case. Then:
+register it in `partitions.md`, create `wiki/<name>/` from `_templates/partition-index.md`
+plus `raw/` and `sources/` (each with a `.gitkeep`), `git mv` the clustered pages and their
+raw files, fix every inbound link, update the root index, and log a `restructure` entry.
+That `git mv` is the only permitted change to `raw/`; content must not change.
 
 ## 4. Pages
 
@@ -112,8 +109,8 @@ status: stub | active | stable
 
 - `sources:` lists every raw file the page cites, repo-root-relative (not a markdown link);
   `[]` when none. `updated:` changes on every edit; `created:` never does.
-- `status:` `stub` is a placeholder, `active` is growing, `stable` is settled.
-- Tags are lowercase and hyphenated. Reuse existing ones.
+- `status:` `stub` is a placeholder, `active` is growing, `stable` is settled. Tags are
+  lowercase and hyphenated; reuse existing ones.
 - Optional: `aliases` (entity, concept), `entity_kind` (entity: `person | company | tool |
   product | place | other`), `asked` (question: date).
 - Index pages carry only `type: index`, `partition` (or `scope: root | registry` for
@@ -134,11 +131,10 @@ status: stub | active | stable
 
 When a batch touches a topic page, rewrite its thesis rather than appending to it.
 
-Copy the matching file from [_templates/](_templates/) and **delete its explanatory prose**;
-it's guidance for you, not wiki content. Drop sections that would stay empty. Keep the
-`Sources` section, and keep the `_None._` markers on source pages. A `Sources` section lists
-the raw files the page cites (feed digests included), each with a link to its source page
-when it has one.
+Copy the matching file from [_templates/](_templates/), **delete its HTML comments** (guidance
+for you, not wiki content), and replace every `<placeholder>`. Drop sections that would stay
+empty. Keep the `Sources` section, and the `_None._` markers on source pages. `Sources` lists
+the raw files the page cites (feed digests included), each linking its source page if any.
 
 ### Names and links
 
@@ -173,14 +169,15 @@ Procedures: [ingest-url](wiki/workflows/ingest-url.md),
 [ingest-inbox](wiki/workflows/ingest-inbox.md) for files the human drops into `inbox/`.
 
 Store the **full converted text**, never just a link; a rotted URL takes every citation with
-it. Keep the original's headings and order and add no commentary; that belongs on the source
-page. The one exception: describe each image that carries content at capture time, in a
-marked block, so model-written text never passes for source text:
+it. Prefer a deterministic converter writing into `tmp/` (pandoc, trafilatura or
+readability, markitdown: whichever exists) over retyping. Check its headings and length
+against the original, then move it into `raw/`. With no converter, retype, and verify
+completeness. With images, read the text first, then view the images separately.
 
-```markdown
-> [!capture-note] Agent description of 2026-08-06-caching-patterns-fig1.png
-> Bar chart of p99 latency for three cache strategies; write-behind is lowest.
-```
+Keep the original's headings and order and add no commentary; that belongs on the source
+page. The one exception: describe each image that carries content at capture time, inside a
+`> [!capture-note] Agent description of <image-file>` block, so model-written text never
+passes for source text.
 
 **Path:** `wiki/<partition>/raw/YYYY-MM/YYYY-MM-DD-slug.md`, dated by capture date in the
 human's local time. Slug: three to six words from the title, unique across the partition's
@@ -230,8 +227,8 @@ for the text. Never fabricate post content or IDs.
   signal`. Copy [_templates/feed-digest.md](_templates/feed-digest.md) exactly.
 - `<id>` is the platform's post ID from the URL. With none, use
   `local-<YYYYMMDDHHMM>-<n>` (batch time, position), leave `url:` empty, and write
-  `posted: unknown` if needed. It's a local label, never a claimed platform ID.
-- Bodies are verbatim; threads stay whole in one block.
+  `posted: unknown` if needed. It's a local label, never a claimed platform ID. Bodies are
+  verbatim; threads stay whole in one block.
 - **Digests never get source pages.** High-signal posts update topic and entity pages, cited
   by anchor. Low-signal posts stay in the digest, unextracted.
 
@@ -251,8 +248,6 @@ is manifest-gated** by `wiki/.bookmarks-manifest.json`; never re-fetch a post al
 | Lint identifies a gap | Propose candidates with one-line justifications; ingest only what's approved |
 | A source cites something interesting | Note it under "Leads not followed"; **do not ingest it** |
 
-Record `acquired_by` on every capture.
-
 ## 6. Signal criteria
 
 Owned by the human, in [signal.md](signal.md); edit them there, never here. Apply them to
@@ -265,17 +260,22 @@ Change `signal.md` only when the human asks, and log a `schema` entry.
 rewritten; raw files don't.
 
 **Footnote keys, never numbers.** The key is the raw file's slug with its date stripped
-(also the source page's slug; a `-v2` re-capture gets its own key, `[^slug-v2]`). Numbers are positional, and pages are rewritten, so
-reordering silently re-points `[^2]` at a different file; a key fails loudly.
+(also the source page's slug; a `-v2` re-capture gets its own key, `[^slug-v2]`). Numbers
+are positional, and pages are rewritten, so reordering silently re-points `[^2]` at a
+different file; a key fails loudly.
+
+**Point at a locator.** Link the nearest heading anchor when the raw file has headings, and
+add a short verbatim quote for numbers, definitions, and contestable claims. A quote that
+doesn't appear in the raw file is a broken citation.
 
 ```markdown
 Write-through caching trades write latency for read consistency.[^caching-patterns]
 
-[^caching-patterns]: [Caching Patterns at Scale](raw/2026-08/2026-08-06-caching-patterns.md)
+[^caching-patterns]: [Caching Patterns at Scale](raw/2026-08/2026-08-06-caching-patterns.md#write-through) — "every write pays for the read that follows"
 ```
 
-- Reuse the key when citing the same file twice. For a section anchor, suffix it
-  (`[^caching-patterns-thread]`).
+- Reuse a key for the same file and locator. For a second locator in the same file, suffix
+  the key (`[^caching-patterns-invalidation]`).
 - Feed posts use `<platform>-post-<id>`:
   `[^x-post-1738291043]: [thread](raw/2026-08/2026-08-06-1430-x-posts.md#post-1738291043)`.
 
@@ -295,7 +295,9 @@ tensions`. Never silently overwrite the older claim or manufacture a consensus.
 
 ### Ingest
 
-Follow the matching workflow. The outcome is the same for all of them:
+Follow the matching workflow. If [preferences.md](preferences.md) says ingest is
+interactive, pause after the source page: give the key takeaways and the pages you plan to
+touch, and wait for the human's steer before the cascade. The outcome is the same for all:
 
 1. Raw file(s) written per §5, before anything else. Nothing under `raw/` is touched again.
 2. For a deep source: a source page, then **every** entity, concept, and topic page it
@@ -309,18 +311,16 @@ Follow the matching workflow. The outcome is the same for all of them:
    a partition's focus shifted, rewrite its one-line summary in [index.md](index.md).
 6. One log entry per deep source or feed batch (never per post).
 7. Report: sources acquired, posts triaged high vs low, pages created and updated,
-   contradictions, acquisitions skipped and why, plus the §10 review commands.
+   contradictions, acquisitions skipped and why, plus the §10 review commands. **Don't
+   commit** unless the human asks.
 8. Scoped lint ([lint.md](lint.md)), with findings appended to the report.
-
-**Don't commit** unless the human asks; they review with §10.
 
 ### Query
 
-Procedure: [query](wiki/workflows/query.md). Route through the root index and partition
-indexes to a bounded set of pages; follow footnotes into `raw/` for any claim the answer
-rests on; search all of `wiki/` only if routing finds nothing. Cite raw files, mark your own
-reasoning as inference (§7), and say plainly when the wiki doesn't cover the question. Offer
-to file lasting answers as `question` pages (then index them and log a `query` entry).
+Procedure: [query](wiki/workflows/query.md). Route through the indexes to a bounded set of
+pages, follow footnotes into `raw/` for any claim the answer rests on, and search all of
+`wiki/` only if routing finds nothing. Cite raw files, mark inference (§7), say plainly when
+the wiki doesn't cover the question, and offer to file lasting answers as `question` pages.
 
 ### Lint
 
@@ -372,18 +372,16 @@ git log --diff-filter=MDR -- 'wiki/*/raw/*'
 ```
 
 Two things fail silently if changed: the trailing `/*` (a directory-style pathspec matches
-nothing and exits 0) and `MDR` (plain `M` misses deletions and renames, the unrecoverable
-failures). Renames from an approved restructure are expected; confirm each against its
-`restructure` log entry.
+nothing and exits 0) and `MDR` (plain `M` misses deletions and renames). Renames from an
+approved restructure are expected; match each to its `restructure` log entry.
 
 ## 11. Preferences
 
 [preferences.md](preferences.md) holds the human's durable instructions. When they state a
 rule meant to last ("always…", "from now on…", "never…"), record it there in the same turn
 and log a `schema` entry. If unsure whether it's durable, ask. A new preference that
-contradicts an old one replaces it; the log keeps history.
-
-Change this file (partition rules, page conventions) only when the human asks.
+contradicts an old one replaces it; the log keeps history. Change this file only when the
+human asks.
 
 ## 12. Standing habits
 
@@ -393,6 +391,8 @@ Change this file (partition rules, page conventions) only when the human asks.
   page's text.
 - Read only what you need. For `log.md`, take the tail of its headers
   (`grep "^## \[" log.md | tail -20`); for a long raw file, search for the passage.
+- Run `python3 scripts/check-wiki.py` for the mechanical checks (links, anchors, orphans,
+  index listings, frontmatter, template leftovers, numbered footnotes, raw integrity).
 - Use `tmp/` for downloads and conversions. Nothing in it is committed, and nothing in the
   wiki may link into it.
 - Never write credentials, tokens, or API keys into any file in this repo.

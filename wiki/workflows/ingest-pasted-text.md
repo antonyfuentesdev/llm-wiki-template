@@ -60,12 +60,12 @@ the transcript.
 1. **Split the paste into posts.** Keep each thread whole in one block. Pull IDs from post
    URLs; with no URL, use `local-<YYYYMMDDHHMM>-<n>` (AGENTS.md §5.2). → verify: the post
    count matches what the human pasted.
-2. **Score each post** against [signal.md](../../signal.md) and record `signal: high` or `low`. When unsure,
-   `low`. → verify: every post has a verdict.
+2. **Score each post** against [signal.md](../../signal.md) and record `signal: high` or
+   `low`. When unsure, `low`. → verify: every post has a verdict.
 3. **Group by subject, then write one digest per partition** (and per platform) from
-   `_templates/feed-digest.md`, with `post_count` and `high_signal` filled in. Remove the
-   template's guidance sections. → verify: posts are verbatim, and keys appear in the fixed
-   order.
+   `_templates/feed-digest.md`, with `post_count` and `high_signal` filled in. Delete every
+   HTML comment from the template first. → verify: posts are verbatim, keys appear in the
+   fixed order, and no comments or `<placeholders>` remain.
 4. **Extract the high-signal posts.** No source page. Update the topic and entity pages each
    post is relevant to, citing the anchor with the key `<platform>-post-<id>`.
    → verify: each high-signal post is cited at least once, or the report says why not.

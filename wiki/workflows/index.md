@@ -10,8 +10,9 @@ updated: 2026-10-29
 Catalog only. Scope and boundaries live in [the registry](../partitions.md) — one
 authoritative copy. The whole wiki is catalogued in the [root index](../../index.md).
 
-The first four procedures implement the operations in [AGENTS.md](../../AGENTS.md) §8. When a
-procedure and AGENTS.md disagree, AGENTS.md wins; fix the procedure.
+These procedures implement the operations in [AGENTS.md](../../AGENTS.md) §8. When a
+procedure and AGENTS.md disagree, AGENTS.md wins; propose a fix to the procedure (AGENTS.md
+§1).
 
 ## Topics and concepts
 
@@ -25,8 +26,8 @@ _None yet._
   exports as deep sources, or a batch of social posts as a feed digest.
 - [Answer a question](query.md) — route through the indexes, answer with citations to raw
   files, and file lasting answers as question pages.
-- [Run a lint pass](lint-pass.md) — scoped after every ingest and feed batch, full on request; report and
-  propose, never fix unasked.
+- [Run a lint pass](lint-pass.md) — scoped after every ingest and feed batch, full on
+  request; report and propose, never fix unasked.
 - [Ingest the inbox](ingest-inbox.md) — file what the human dropped into `inbox/` as deep
   sources, then cascade each one into the wiki.
 

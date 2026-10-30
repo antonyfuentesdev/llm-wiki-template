@@ -53,9 +53,9 @@ exists. Starting broad and carving subjects out on evidence avoids that.
 Deep sources (articles, papers, transcripts, notes) each get a raw file and a source page.
 Feed posts don't: at 10–30 a day they'd be most of the corpus by count and little of it by
 value. They're captured in per-batch digests, triaged against a rubric the human owns
-([signal.md](signal.md)), and only high-signal posts update pages, cited by anchor. Saved bookmarks sit
-between: someone already filtered them, so they get per-item treatment when they carry enough
-body.
+([signal.md](signal.md)), and only high-signal posts update pages, cited by anchor. Saved
+bookmarks sit between: someone already filtered them, so they get per-item treatment when
+they carry enough body.
 
 Digest structure is fixed because retrieval is plain text search. Fixed key names on their
 own lines make `grep "signal: high"` work.
@@ -64,7 +64,10 @@ own lines make `grep "signal: high"` work.
 
 Pages are rewritten, not appended to. Numbered footnotes re-point silently when a rewrite
 reorders sources; a key named after the raw file breaks loudly and tells the reader what backs
-the claim. Citations go to raw files because source pages get rewritten too.
+the claim. Citations go to raw files because source pages get rewritten too. Each footnote
+also carries a heading anchor and, for numbers and contestable claims, a short verbatim
+quote, so a reader or `scripts/check-wiki.py` can confirm the passage without rereading the
+whole source.
 
 The agent may add its own knowledge, always inside an `[!inference]` callout, so you can tell
 at a glance what is grounded. When sources disagree, both claims stay on the page with both
@@ -78,7 +81,7 @@ pass on request catches slow drift. Lint reports and proposes; the human approve
 
 ## Preferences and signal criteria live outside AGENTS.md
 
-AGENTS.md, `_templates/`, `wiki/workflows/`, `examples/`, and `lint.md` are the
+AGENTS.md, `_templates/`, `wiki/workflows/`, `examples/`, `scripts/`, and `lint.md` are the
 parts you might update from the template later. [preferences.md](preferences.md) (tone,
 language, standing rules) and [signal.md](signal.md) (what makes a feed post worth
 extracting) are yours. Keeping them apart means a template update doesn't overwrite your
@@ -91,10 +94,13 @@ whole wiki, or all of `log.md`, before every answer would cost more than most an
 
 ## Deliberately not built
 
-- **A search index or vector store.** Indexes plus grep cover this. If retrieval starts
-  missing things, fix structure first; tooling second.
-- **Helper scripts.** The agent edits files directly. A script earns its place when the same
-  mechanical job comes up often enough that shelling out is faster.
+- **A search index or vector store.** Indexes plus grep cover a small wiki. When queries keep
+  falling back to full-text search, or an index passes about 150 lines, add a search tool
+  (qmd, or a small grep script) before splitting partitions; lint proposes it.
+- **Helper scripts, beyond one.** The agent edits files directly. The exception is
+  `scripts/check-wiki.py`: link, orphan, and frontmatter checks came up on every lint, and
+  agents kept writing throwaway checkers for them. Another script earns its place the same
+  way.
 - **Obsidian config.** Links are plain relative markdown, so the wiki renders in any editor,
   on GitHub, and in Obsidian.
 - **Tool-specific config.** The spec names no particular agent, model, or service, so it

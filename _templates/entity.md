@@ -12,30 +12,38 @@ aliases: []
 
 # <Entity name>
 
-One-sentence identification. Who or what this is, in the terms that matter here.
+<!-- One-sentence identification: who or what this is, in the terms that matter here. -->
 
 ## What it is
 
-The substance. Keep it factual and cited;[^<slug>] interpretation belongs under Assessment.
+<!-- The substance. Keep it factual and cited, with footnotes pointing at a heading anchor and
+     quoting the source for numbers and contestable claims (AGENTS.md §7). Interpretation
+     belongs under Assessment. -->
+
+<Fact from the source.>[^<slug>]
 
 ## Why it matters here
 
-Why this entity earned a page in *this* wiki — the connection to what the human is actually
-working on or thinking about.
+<!-- Why this entity earned a page in this wiki: the connection to what the human is working
+     on or thinking about. -->
 
 ## Related
 
-- [Page](<page>.md) — how they relate.
+- [<Page>](<page>.md) — <how they relate>.
 
 ## Assessment
 
-Judgments, opinions, open questions. Mark anything the agent contributed itself:
+<!-- Judgments, opinions, open questions. Mark anything you contributed yourself with an
+     inference callout, as below; delete the callout if there is none. -->
 
 > [!inference] Agent-inferred, not from a source
-> Reasoning that no source in the wiki supports directly.
+> <Reasoning that no source in the wiki supports directly.>
 
 ## Sources
 
+<!-- The raw files this page cites, feed digests included, each with its source page when it
+     has one. -->
+
 - [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md) · [summary](sources/<slug>.md)
 
-[^<slug>]: [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md)
+[^<slug>]: [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md#<heading>) — "<short verbatim quote>"

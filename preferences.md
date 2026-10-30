@@ -22,4 +22,8 @@ partition scopes ([wiki/partitions.md](wiki/partitions.md)).
 
 ## Rules
 
+<!-- To review each source before the agent updates other pages, uncomment this line:
+- **Do:** ingest interactively: pause after the source summary and ask what to emphasize. — added YYYY-MM-DD
+-->
+
 _None yet._

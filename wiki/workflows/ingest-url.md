@@ -46,34 +46,42 @@ captured — ask whether it's a re-capture before doing anything else.
 
 ## Steps
 
-1. **Fetch the full text into `tmp/`.** Escalate only on failure: a plain HTTP fetch, then
+1. **Fetch the original into `tmp/`.** Escalate only on failure: a plain HTTP fetch, then
    your agent's web-fetch tool, then a real browser if your harness has one. For a local
    file, read it in place. → verify: the body is the actual content — it reads as the
    article from start to end, and it's longer than the page's navigation and footer.
 2. **Stop on a degraded fetch.** Paywall, login wall, consent page, empty body, or obviously
    truncated text: skip this source, and in the report ask the human to paste the text or
    provide the file. → verify: nothing for this source was written under `raw/`.
-3. **Convert to markdown.** Keep headings, lists, code, tables, and figure captions in their
-   original order. Remove site navigation, ads, and related-article lists. Add no commentary.
+3. **Convert to markdown with a tool, not by retyping.** Use whatever deterministic
+   converter the environment has (pandoc, trafilatura or readability, markitdown), writing
+   into `tmp/`. With none, retyping is allowed, but check completeness section by section.
+   Keep headings, lists, code, tables, and figure captions in their original order. Remove
+   site navigation, ads, and related-article lists. Add no commentary. Read the text first,
+   then view the images separately.
    For a PDF, keep the original binary next to the markdown with the same date-slug. For
    images that carry content, save them with the date-slug prefix and describe each where it
    appears, inside a `> [!capture-note] Agent description of <image-file>` block (AGENTS.md
-   §5.1). → verify: section headings match the original.
+   §5.1). → verify: headings and length match the original.
 4. **Choose the partition** the source is most about, per the registry. → verify: the
    registry's not-here line for that partition doesn't exclude it.
-5. **Write the raw file** with acquisition frontmatter. `unknown` for anything you can't
-   find; `acquired_by: user` when handed the URL, `agent-search` when you found it.
-   → verify: the frontmatter keys match AGENTS.md §5.1 exactly.
+5. **Write the raw file:** move the checked conversion from `tmp/` to the raw path and add
+   acquisition frontmatter. `unknown` for anything you can't find; `acquired_by: user` when
+   handed the URL, `agent-search` when you found it. → verify: the frontmatter keys match
+   AGENTS.md §5.1 exactly.
 6. **Write the source page** from `_templates/source.md` at `<partition>/sources/<slug>.md`,
    where the slug is the raw file's minus its date. Cite into the raw file with the key
-   `[^<slug>]`. List cited-but-unfollowed references under "Leads not followed".
-   → verify: all template guidance prose is gone.
+   `[^<slug>]`, pointing at heading anchors and quoting the raw file for numbers and
+   contestable claims (AGENTS.md §7). List cited-but-unfollowed references under "Leads not
+   followed". → verify: no HTML comments or `<placeholders>` remain.
+   **If preferences.md says ingest is interactive,** stop here: give the human the key
+   takeaways and the pages you plan to touch, and wait for their steer.
 7. **Cascade.** Update every entity, concept, and topic page the source substantively
    touches. Create a page from its template only per AGENTS.md §12 (see Page sprawl below).
-   Rewrite topic theses rather than
-   appending. Record contradictions on both sides (AGENTS.md §7). Link across partitions
-   where the subject warrants it. → verify: every page touched is listed under the source
-   page's "What this changed in the wiki", and each has the raw file in `sources:`.
+   Rewrite topic theses rather than appending. Record contradictions on both sides
+   (AGENTS.md §7). Link across partitions where the subject warrants it. → verify: every
+   page touched is listed under the source page's "What this changed in the wiki", and each
+   has the raw file in `sources:`.
 8. **Update indexes and log.** Partition index entries, the root index summary if the
    partition's focus shifted, `updated:` dates, one `ingest` log entry per source.
    → verify: every new page is in its index and has an inbound link from a non-index page.

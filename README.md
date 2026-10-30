@@ -48,12 +48,13 @@ time, not yours.
 
 ## Quickstart
 
-1. **Clone it into a new private repo.** Your wiki will hold personal material.
+1. **Start a private copy with clean history.** Your wiki will hold personal material. On
+   GitHub, click **Use this template** (shown once the repo is flagged as a template) and
+   make the new repo private. Or clone without the template's history:
 
    ```bash
-   git clone <template-url> my-wiki
-   cd my-wiki
-   git remote remove origin
+   git clone --depth 1 <template-url> my-wiki && cd my-wiki && rm -rf .git && git init
+   git add -A && git commit -m "Start from the LLM wiki template"
    # then create an empty private repo on your git host and:
    git remote add origin <your-private-repo-url>
    git push -u origin main
@@ -63,7 +64,10 @@ time, not yours.
    Claude Code reads `CLAUDE.md`, which loads `AGENTS.md`. For any other agent, start the
    session with "Read AGENTS.md and follow it."
 
-3. **Give it a first source.**
+3. **Mark the start.** In the first session, ask the agent to append a fresh `init` entry
+   to [log.md](log.md), dated today. The entry that ships is the template's.
+
+4. **Give it a first source.**
 
    ```text
    Ingest this article: https://example.com/some-article-you-liked
@@ -71,9 +75,10 @@ time, not yours.
 
    The agent captures the full text, writes a summary page, creates or updates the pages for
    the ideas and people in it, updates the indexes, logs what it did, and runs a quick health
-   check. Then it hands you the commands to review its changes.
+   check. Then it hands you the commands to review its changes. To see what one ingest
+   produces, file by file, read the [worked example](examples/worked-example.md).
 
-4. **Review, then commit.** The agent leaves its changes uncommitted so you can read the
+5. **Review, then commit.** The agent leaves its changes uncommitted so you can read the
    diff first (see [How it stays trustworthy](#how-it-stays-trustworthy)).
 
 Optional but useful: tell it how you like things done, and it will remember.
@@ -94,9 +99,10 @@ signal.md            what makes a social post worth extracting; yours to edit
 index.md             catalog of the whole wiki; the agent reads it first
 log.md               append-only timeline of everything the agent did
 lint.md              the health-check checklist
+scripts/             check-wiki.py, the mechanical half of the health check
 PLAN.md              why the rules are what they are
 _templates/          one template per page type, plus the social-post digest
-examples/            optional procedures (X bookmarks); outside the wiki
+examples/            a worked example and optional procedures; outside the wiki
 inbox/               drop files here for the agent to ingest
 tmp/                 scratch space for downloads; contents are git-ignored
 wiki/
@@ -131,9 +137,10 @@ Inside a partition, pages come in a few types:
   superseded. This is what makes citations mean something.
 - **The agent keeps the full text, not a link.** Links rot. A claim has to stay checkable
   against the words it came from, years later.
-- **Every non-obvious claim has a footnote** pointing at the captured source. Footnotes are
-  named after the source (`[^caching-patterns]`), not numbered, so rewrites can't silently
-  point them at the wrong file.
+- **Every non-obvious claim has a footnote** pointing at the passage in the captured source:
+  a heading anchor, plus a short verbatim quote for numbers, definitions, and contestable
+  claims. Footnotes are named after the source (`[^caching-patterns]`), not numbered, so
+  rewrites can't silently point them at the wrong file.
 - **The agent's own knowledge is labeled.** It can add what it knows or infers, inside a
   callout marked "Agent-inferred, not from a source".
 - **Pages are earned.** The agent creates a page for a person, tool, or idea when a source
@@ -227,6 +234,10 @@ https://example.com/c
 
 ```text
 Ingest the PDF at ~/Downloads/paper.pdf. Keep the original file alongside the text.
+```
+
+```text
+Ingest the inbox.
 ```
 
 ```text
@@ -331,8 +342,14 @@ Update the question page on caching strategies with what the new article says.
 **Sources can't drift.** `raw/` folders are append-only. A summary can be rewritten a hundred
 times; the text it cites stays exactly as captured.
 
-**Every claim is traceable.** Footnotes point at the captured file, not at a summary of it.
-Anything the agent added from its own knowledge is labeled as such.
+**Every claim is traceable.** Footnotes point at the passage in the captured file, not at a
+summary of it, and quote it where the claim is a number or contestable. Anything the agent
+added from its own knowledge is labeled as such.
+
+**A script checks the mechanics.** `python3 scripts/check-wiki.py` (standard-library Python,
+no install) reports broken links and anchors, quotes missing from their source, orphan pages,
+pages missing from their index, missing frontmatter, leftover template text, numbered
+footnotes, and modified raw files. The agent runs it during every health check.
 
 **You review every change in git.** The agent leaves its work uncommitted and hands you
 review commands that split what changed in your pages from what came in as new source
@@ -370,8 +387,27 @@ or source: `articles`, `twitter`, `2026`.
 **Change page structure.** Edit the files in [_templates/](_templates/). Keep the frontmatter
 field names in step with [AGENTS.md](AGENTS.md) §4.
 
-**Use Obsidian.** Open the repo root as a vault. Links are plain relative markdown, so they
-work there, on GitHub, and in any editor. The graph view is a good way to see the wiki's shape.
+## Using Obsidian
+
+Optional, but a good viewer: open the repo root as a vault. A few settings keep your own edits
+in line with the rules.
+
+- **Files and links:** set *New link format* to *Relative path to file* and turn *Use
+  [[Wikilinks]]* off, so your edits write plain markdown links like the agent's. Add
+  `_templates/` and `examples/` to *Excluded files* to keep placeholders out of search and
+  the graph.
+- **Attachments:** images belong beside the raw file that uses them, never in a shared
+  folder. Set *Default location for new attachments* to *Same folder as current file*; the
+  agent moves them into place on ingest.
+- **Web Clipper:** point the browser extension at `inbox/`, then tell the agent "ingest the
+  inbox".
+- **Dataview** can query the page frontmatter (`type`, `partition`, `tags`, `status`,
+  `updated`) for live tables.
+- **Graph view** shows the hubs and the orphans.
+
+GitHub doesn't render the `[!inference]` and `[!capture-note]` callouts; they show as plain
+quotes, which is fine. `.obsidian/` is git-ignored; remove that line from `.gitignore` if you
+want to commit your vault settings.
 
 ## Optional integrations
 
@@ -391,7 +427,8 @@ else is optional:
 **Which agent should I use?** Any coding agent that can edit files in a folder and fetch web
 pages. The rules don't depend on a particular one.
 
-**Do I need Obsidian?** No. It's a nice viewer, not a requirement.
+**Do I need Obsidian?** No. It's a nice viewer, not a requirement
+([setup notes](#using-obsidian)).
 
 **Should the repo be public?** Your wiki, no. It will contain what you read, your notes, and
 possibly notes about people. Keep it private. This template is public; your copy shouldn't be.
@@ -405,8 +442,10 @@ write into `raw/` yourself.
 marks the old one superseded. Nothing is overwritten.
 
 **How big can it get?** The agent reads indexes first and opens only the pages it needs, so
-size matters less than structure. If a partition's index gets long, that's a sign a new
-partition is due, and lint will say so.
+size matters less than structure. When queries keep falling back to full-text search, or an
+index passes about 150 lines, add a search tool before splitting partitions:
+[qmd](https://github.com/tobi/qmd) is a local search engine for markdown, or the agent can
+write a small grep script. Lint proposes this when it sees the signs.
 
 **What about PDFs and images in git?** They're committed like any other file. If your repo
 grows large from binaries, consider Git LFS for `*.pdf` and image files.
@@ -415,7 +454,7 @@ grows large from binaries, consider Git LFS for `*.pdf` and image files.
 stops a team. Review changes through pull requests instead of local diffs.
 
 **How do I update to a newer version of this template?** The template owns `AGENTS.md`,
-`lint.md`, `_templates/`, `wiki/workflows/`, and `examples/`: compare those with the new
+`lint.md`, `_templates/`, `wiki/workflows/`, `examples/`, and `scripts/`: compare those with the new
 version and merge what you want. You own `preferences.md`, `signal.md`, `index.md`,
 `log.md`, and everything else under `wiki/`; a template update never needs to touch them.
 
