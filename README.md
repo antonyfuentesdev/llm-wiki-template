@@ -60,7 +60,13 @@ time, not yours.
    git push -u origin main
    ```
 
-2. **Open the folder in your agent.** Cursor and Codex read `AGENTS.md` automatically.
+2. **Add the wiki to the workspace you already work in.** This is the best way to use it.
+   Editors like Cursor let one workspace hold several folders. Add the wiki next to your
+   code repos, and every new chat in that workspace loads the wiki's `AGENTS.md` before you
+   type anything. The agent already knows what the wiki is and how to file into it, so you
+   never explain it. See [Use it from your everyday workspace](#use-it-from-your-everyday-workspace).
+
+   Or open the wiki folder on its own. Cursor and Codex read `AGENTS.md` automatically.
    Claude Code reads `CLAUDE.md`, which loads `AGENTS.md`. For any other agent, start the
    session with "Read AGENTS.md and follow it."
 
@@ -88,6 +94,41 @@ From now on, write all summaries in Spanish, and skip entity pages for people me
 ```
 
 That lands in [preferences.md](preferences.md), which the agent reads every session.
+
+### Use it from your everyday workspace
+
+The wiki works best as one folder in a multi-folder workspace, next to the projects you
+are building. Each folder keeps its own repo and its own `AGENTS.md`. When you start a chat,
+the agent picks up the `AGENTS.md` of every folder in the workspace, so it already holds
+the wiki's rules.
+
+How that plays out:
+
+1. You're building something with the agent, in a code repo.
+2. You work out a deployment recipe, a debugging approach, or a decision worth keeping.
+3. You say so, in the same chat. No setup, no pasted instructions.
+
+```text
+That migration recipe took us three tries. File it as a workflow in the wiki.
+```
+
+```text
+Add what we learned about rate-limit retries to the wiki, and cite the docs page we used.
+```
+
+```text
+Before we start, check the wiki for anything we've already figured out about this.
+```
+
+The agent writes in the wiki folder while the code stays in the project repo, so the two
+histories stay separate. If the wiki isn't in your workspace, the same prompts work once you
+open it, with one extra line to point the agent at `AGENTS.md`.
+
+Setup: in Cursor, use **File → Add Folder to Workspace** and save the workspace file. Other
+tools have an equivalent, such as extra directories in Claude Code. How each tool loads a
+second folder's instructions differs and changes between versions, so test yours: start a
+new chat and ask "What does the wiki's AGENTS.md say about `raw/`?" If the agent answers
+without reading a file, it's loaded.
 
 ## What's in the box
 
