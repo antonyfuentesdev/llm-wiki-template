@@ -54,6 +54,17 @@ for dp, dns, fns in os.walk(ROOT):
 fms = {p: frontmatter(p) for p in files}
 pages = [p for p in files if p.startswith(WIKI + os.sep) and not is_raw(p)]
 inbound, listed = {}, {}
+VER = re.compile(r'^(\d{4}-\d{2}-\d{2})-(.+?)(?:-v(\d+))?\.md$')
+raws = {}  # (partition dir, base slug) -> {version: repo-relative path}
+for p in files:
+    m = is_raw(p) and VER.match(os.path.basename(p))
+    if m:
+        key = (p.split(os.sep + 'raw' + os.sep)[0], m.group(2))
+        raws.setdefault(key, {})[int(m.group(3) or 1)] = os.path.relpath(p, ROOT)
+superseded = {}  # old raw path -> set of newer raw paths
+for versions in raws.values():
+    for v, path in versions.items():
+        superseded[path] = {q for w, q in versions.items() if w > v}
 
 for p in files:
     if is_raw(p):
@@ -99,6 +110,9 @@ for p in files:
         report(p, 1, f'missing frontmatter: {", ".join(missing)}')
     if kind not in TYPES:
         report(p, 1, f'unknown type: {kind}')
+    for old in sorted(cited):
+        if superseded.get(old) and not superseded[old] & cited:
+            report(p, 1, f'cites superseded {old} without its newer version (AGENTS.md §5.1)')
     if kind in ('index', 'workflow') or 'sources' not in fm:
         continue
     declared = set(re.findall(r'[^\[\],\s]+', fm['sources']))

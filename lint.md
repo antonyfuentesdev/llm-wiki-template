@@ -53,7 +53,8 @@ Workflow pages (`type: workflow`) are procedures, not claims about the world. Ch
       approved `restructure` log entry. A non-empty result means every citation into the
       affected file is suspect.
 - [ ] **Superseded sources.** Re-fetched or corrected sources whose old version isn't marked
-      superseded on the corresponding source page.
+      superseded on the corresponding source page, and pages still citing a superseded raw file
+      without its newer version (`check-wiki.py` reports these).
 
 ## Structural health
 
