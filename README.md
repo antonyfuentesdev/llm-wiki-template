@@ -90,11 +90,14 @@ That lands in [preferences.md](preferences.md), which the agent reads every sess
 AGENTS.md            the rules the agent follows (the "schema" in Karpathy's terms)
 CLAUDE.md            points Claude Code at AGENTS.md
 preferences.md       your standing instructions to the agent
+signal.md            what makes a social post worth extracting; yours to edit
 index.md             catalog of the whole wiki; the agent reads it first
 log.md               append-only timeline of everything the agent did
 lint.md              the health-check checklist
 PLAN.md              why the rules are what they are
 _templates/          one template per page type, plus the social-post digest
+examples/            optional procedures (X bookmarks); outside the wiki
+inbox/               drop files here for the agent to ingest
 tmp/                 scratch space for downloads; contents are git-ignored
 wiki/
   partitions.md      the list of partitions and what belongs in each
@@ -114,7 +117,7 @@ Inside a partition, pages come in a few types:
 
 | Type | What it is | Example |
 | --- | --- | --- |
-| source | A summary of one captured source | `sources/caching-patterns-at-scale.md` |
+| source | A summary of one captured source | `sources/caching-patterns.md` |
 | entity | A person, company, tool, product, or place | `postgres.md` |
 | concept | An idea, pattern, or technique | `write-through-caching.md` |
 | topic | The running synthesis on a subject, with a thesis | `caching.md` |
@@ -151,11 +154,11 @@ Inside a partition, pages come in a few types:
 | --- | --- | --- |
 | Deep | Articles, papers, PDFs, transcripts, book chapters, your notes, chat exports | Full text in `raw/`, a summary page, and updates to every related page |
 | Feed | Batches of posts from X, LinkedIn, Bluesky, and similar | One digest file per batch; each post is scored high or low signal; only high-signal posts update pages |
-| Bookmarks (optional) | Saved X bookmarks via the X API | Each saved post is captured with its thread, replies, media, and links; substantial ones are treated as deep sources, the rest go into a digest |
+| Bookmarks (optional) | Saved X bookmarks via the X API, using [an example procedure](examples/x-bookmark-ingest.md) | Each saved post is captured with its thread, replies, media, and links; substantial ones are treated as deep sources, the rest go into a digest |
 
 The split exists because volume and value don't match. Twenty posts a day would bury the wiki
 in summary pages if each got one. What counts as high signal is written in
-[AGENTS.md](AGENTS.md) §6, and it's yours to edit.
+[signal.md](signal.md), and it's yours to edit.
 
 ## Use cases
 
@@ -359,7 +362,7 @@ folder. Partition scopes are in [wiki/partitions.md](wiki/partitions.md); the ru
 a subject: `health`, `finance`, `machine-learning`, `parenting`. Bad candidates name a format
 or source: `articles`, `twitter`, `2026`.
 
-**Change what counts as high signal.** Edit [AGENTS.md](AGENTS.md) §6, or ask the agent to.
+**Change what counts as high signal.** Edit [signal.md](signal.md), or ask the agent to.
 
 **Tell the agent how you work.** State a rule once ("always…", "never…") and it lands in
 [preferences.md](preferences.md). Edit that file by hand any time.
@@ -376,8 +379,8 @@ The wiki works with nothing but an agent that can read, write, and fetch web pag
 else is optional:
 
 - **X bookmarks.** Connect the X API with user-level OAuth through whatever client your agent
-  supports (an MCP server, a CLI, or HTTP), then follow
-  [wiki/workflows/x-bookmark-ingest.md](wiki/workflows/x-bookmark-ingest.md). Keep
+  supports (an MCP server, a CLI, or HTTP), then follow the example procedure in
+  [examples/x-bookmark-ingest.md](examples/x-bookmark-ingest.md). Keep
   credentials in your agent's secret store or environment, never in this repo.
 - **Any other source with an API** (a read-later app, a notes app, a meeting recorder) can get
   its own workflow page in `wiki/workflows/`, built from
@@ -393,9 +396,10 @@ pages. The rules don't depend on a particular one.
 **Should the repo be public?** Your wiki, no. It will contain what you read, your notes, and
 possibly notes about people. Keep it private. This template is public; your copy shouldn't be.
 
-**Can I add files myself instead of asking the agent?** Yes. Drop a file into
-`wiki/<partition>/raw/YYYY-MM/` named `YYYY-MM-DD-slug.md` and ask the agent to ingest it.
-Don't edit it afterwards.
+**Can I add files myself instead of asking the agent?** Yes. Drop them into `inbox/` (a
+clipped article, a PDF, notes, a transcript) and say "ingest the inbox". The agent files
+each one into the right `raw/` folder with its frontmatter and empties the inbox. Don't
+write into `raw/` yourself.
 
 **What happens when a source is wrong?** The agent captures a corrected copy as a new file and
 marks the old one superseded. Nothing is overwritten.
@@ -410,9 +414,10 @@ grows large from binaries, consider Git LFS for `*.pdf` and image files.
 **Can several people share one wiki?** The template is built for one person, but nothing
 stops a team. Review changes through pull requests instead of local diffs.
 
-**How do I update to a newer version of this template?** Compare its `AGENTS.md`, `lint.md`,
-`_templates/`, and `wiki/workflows/` with yours and merge what you want. Your
-`preferences.md` and everything under `wiki/` stay yours.
+**How do I update to a newer version of this template?** The template owns `AGENTS.md`,
+`lint.md`, `_templates/`, `wiki/workflows/`, and `examples/`: compare those with the new
+version and merge what you want. You own `preferences.md`, `signal.md`, `index.md`,
+`log.md`, and everything else under `wiki/`; a template update never needs to touch them.
 
 ## Contributing
 

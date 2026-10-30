@@ -17,8 +17,8 @@ ending with the date it was added or last changed:
 - **Do:** prefer academic papers over blog posts when asked to find sources. — added 2026-11-05
 ```
 
-Things that belong elsewhere: what counts as a high-signal post (AGENTS.md §6), and partition
-scopes ([wiki/partitions.md](wiki/partitions.md)).
+Things that belong elsewhere: what counts as a high-signal post ([signal.md](signal.md)), and
+partition scopes ([wiki/partitions.md](wiki/partitions.md)).
 
 ## Rules
 

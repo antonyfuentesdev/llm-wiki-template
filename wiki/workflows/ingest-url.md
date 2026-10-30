@@ -19,7 +19,8 @@ The human hands over one or more URLs or file paths and asks to ingest, save, or
 Also when asked to "find and ingest" something: search first, then run this for each pick.
 
 Not this: pasted text ([ingest-pasted-text](ingest-pasted-text.md)), a batch of social posts
-(also that page), or X bookmarks ([x-bookmark-ingest](x-bookmark-ingest.md)).
+(also that page), files waiting in `inbox/` ([ingest-inbox](ingest-inbox.md)), or bookmarks
+pulled from an API ([the X example](../../examples/x-bookmark-ingest.md)).
 
 ## Success and failure
 

@@ -53,7 +53,7 @@ exists. Starting broad and carving subjects out on evidence avoids that.
 Deep sources (articles, papers, transcripts, notes) each get a raw file and a source page.
 Feed posts don't: at 10–30 a day they'd be most of the corpus by count and little of it by
 value. They're captured in per-batch digests, triaged against a rubric the human owns
-(AGENTS.md §6), and only high-signal posts update pages, cited by anchor. Saved bookmarks sit
+([signal.md](signal.md)), and only high-signal posts update pages, cited by anchor. Saved bookmarks sit
 between: someone already filtered them, so they get per-item treatment when they carry enough
 body.
 
@@ -76,12 +76,13 @@ A full pass after every daily batch would re-read hundreds of untouched pages. S
 checks what a batch touched plus its neighbors and the clusters in those partitions; a full
 pass on request catches slow drift. Lint reports and proposes; the human approves.
 
-## Preferences live outside AGENTS.md
+## Preferences and signal criteria live outside AGENTS.md
 
-AGENTS.md is the part of this repo you might want to update from the template later.
-[preferences.md](preferences.md) is yours: tone, language, standing rules. Keeping them apart
-means a template update doesn't overwrite your instructions, and the agent has a clear place
-to record a rule you state once.
+AGENTS.md, `_templates/`, `wiki/workflows/`, `examples/`, and `lint.md` are the
+parts you might update from the template later. [preferences.md](preferences.md) (tone,
+language, standing rules) and [signal.md](signal.md) (what makes a feed post worth
+extracting) are yours. Keeping them apart means a template update doesn't overwrite your
+instructions, and the agent has a clear place to record a rule you state once.
 
 ## Light preflight
 

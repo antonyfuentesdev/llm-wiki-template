@@ -60,7 +60,7 @@ the transcript.
 1. **Split the paste into posts.** Keep each thread whole in one block. Pull IDs from post
    URLs; with no URL, use `local-<YYYYMMDDHHMM>-<n>` (AGENTS.md §5.2). → verify: the post
    count matches what the human pasted.
-2. **Score each post** against AGENTS.md §6 and record `signal: high` or `low`. When unsure,
+2. **Score each post** against [signal.md](../../signal.md) and record `signal: high` or `low`. When unsure,
    `low`. → verify: every post has a verdict.
 3. **Group by subject, then write one digest per partition** (and per platform) from
    `_templates/feed-digest.md`, with `post_count` and `high_signal` filled in. Remove the
@@ -80,4 +80,4 @@ the transcript.
 - **Speaker names.** Transcripts often mangle names. Don't create entity pages from a garbled
   name; ask the human who it was.
 - **Over-extracting a feed.** If most of a batch scores high, the rubric is too loose. Say so
-  in the report and suggest a change to AGENTS.md §6 rather than extracting everything.
+  in the report and suggest a change to `signal.md` rather than extracting everything.

@@ -27,8 +27,11 @@ _None yet._
   files, and file lasting answers as question pages.
 - [Run a lint pass](lint-pass.md) — scoped after every ingest and feed batch, full on request; report and
   propose, never fix unasked.
-- [Ingest X bookmarks (optional)](x-bookmark-ingest.md) — pull saved X bookmarks as complete
-  units through the X API, gated by a manifest so nothing is captured twice.
+- [Ingest the inbox](ingest-inbox.md) — file what the human dropped into `inbox/` as deep
+  sources, then cascade each one into the wiki.
+
+An optional procedure for X bookmarks lives outside the wiki, in
+[examples/x-bookmark-ingest.md](../../examples/x-bookmark-ingest.md).
 
 ## Entities
 

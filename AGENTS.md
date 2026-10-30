@@ -15,7 +15,7 @@ defaults. No preference can override §1 (append-only raw) or §7 (provenance).
 
 - **Always** read [preferences.md](preferences.md).
 - **Ingest:** also read [wiki/partitions.md](wiki/partitions.md) and the index of every
-  partition you might file into.
+  partition you might file into. Feed batches also read [signal.md](signal.md).
 - **Query:** read [index.md](index.md), then the relevant partition indexes (§8).
 - **Lint or restructure:** read [lint.md](lint.md) and the registry.
 - **Tiny tasks** (typo, a question about this file): preferences only.
@@ -40,11 +40,13 @@ them only at the human's request or with their approval, and log a `schema` entr
 
 ```
 AGENTS.md  CLAUDE.md  PLAN.md   the spec, a pointer to it, design rationale
-preferences.md                  the human's standing instructions to you
+preferences.md  signal.md       the human's standing instructions; feed triage criteria
 index.md                        root catalog: read first when answering a question
 log.md                          append-only chronological record
 lint.md                         health-check checklist
 _templates/                     copy these rather than improvising structure
+examples/                       optional procedures and a worked example; not part of the wiki
+inbox/                          where the human drops files to ingest; not raw, may be emptied
 tmp/                            scratch space, git-ignored
 wiki/
   partitions.md                 partition registry: read before filing anything
@@ -161,14 +163,14 @@ when it has one.
 ## 5. Sources — three tiers
 
 Deep sources, feed posts, and bookmarks use different pipelines. **Never run a feed batch
-through the deep pipeline**: at 10–30 posts a day it yields thousands of summary pages a
-year for material that doesn't warrant them.
+through the deep pipeline**: at 10–30 posts a day it yields thousands of needless pages.
 
 ### 5.1 Deep sources
 
 Articles, papers, PDFs, transcripts, book chapters, the human's own notes, chat exports.
 Procedures: [ingest-url](wiki/workflows/ingest-url.md),
-[ingest-pasted-text](wiki/workflows/ingest-pasted-text.md).
+[ingest-pasted-text](wiki/workflows/ingest-pasted-text.md), and
+[ingest-inbox](wiki/workflows/ingest-inbox.md) for files the human drops into `inbox/`.
 
 Store the **full converted text**, never just a link; a rotted URL takes every citation with
 it. Keep the original's headings and order and add no commentary; that belongs on the source
@@ -195,12 +197,13 @@ url: https://example.com/caching-patterns
 author: Jane Doe
 published: 2026-07-14
 fetched: 2026-08-06
-type: article | pdf | transcript | note | chat | image
-acquired_by: user | agent-search | agent-followed-link
+type: article | pdf | transcript | note | chat | image | post
+acquired_by: user | agent-search | agent-followed-link | api
 ---
 ```
 
-No `partition:` field: the path records it, and a restructure would make it stale.
+No `partition:` field: the path records it, and a restructure would make it stale. `post`
+and `api` are for deep bookmarks (§5.3).
 
 - Use `unknown` for an author or date you can't find; never guess. Leave `url:` empty for
   pasted text with no origin. Strip tracking and auth parameters from URLs.
@@ -234,15 +237,10 @@ for the text. Never fabricate post content or IDs.
 
 ### 5.3 Curated bookmarks (optional)
 
-Only if you connect a bookmarks source such as the X API. Procedure:
-[x-bookmark-ingest](wiki/workflows/x-bookmark-ingest.md).
-
-A **deep bookmark** carries body worth citing alone (long-form post, article, video with
-content, external link that fetched cleanly). It gets its own raw file and source page like
-§5.1, dated by the post's creation date. Everything else is **shallow**: a per-partition
-digest under §5.2 with `source: bookmarks` added. Capture the whole unit, not just the saved
-post. **Every capture is manifest-gated** by `wiki/.bookmarks-manifest.json`; never re-fetch
-a post already in it.
+Only if you connect a bookmarks API. An example procedure for X:
+[examples/x-bookmark-ingest.md](examples/x-bookmark-ingest.md). Capture the whole unit
+(thread, top replies, quoted post, media, links), not just the saved post. **Every capture
+is manifest-gated** by `wiki/.bookmarks-manifest.json`; never re-fetch a post already in it.
 
 ### 5.4 Sourcing autonomy
 
@@ -257,24 +255,9 @@ Record `acquired_by` on every capture.
 
 ## 6. Signal criteria
 
-**Owned by the human. Edit as your judgment sharpens.** Applied to every feed post; the
-verdict goes in `signal:` so triage stays auditable.
-
-**High — extract into pages:**
-- Makes a specific, checkable claim: a benchmark, a failure mode, a mechanism, a number.
-- Reports firsthand experience with enough detail to act on.
-- Contradicts or meaningfully qualifies something already in the wiki.
-- Introduces a technique, tool, or concept the wiki doesn't cover.
-- A thread that develops an argument rather than asserting once.
-
-**Low — capture only:**
-- Opinion with no mechanism or evidence.
-- Restates what the wiki already covers.
-- Engagement bait, announcements, promotion, memes, hot takes.
-- Depends on an image, video, or link that wasn't captured.
-- Would produce a page that just paraphrases the post.
-
-**Uncertain:** mark it `low` and move on. The digest keeps everything either way.
+Owned by the human, in [signal.md](signal.md); edit them there, never here. Apply them to
+every feed post and record the verdict in its `signal:` field so triage stays auditable.
+Change `signal.md` only when the human asks, and log a `schema` entry.
 
 ## 7. Provenance
 
@@ -359,13 +342,13 @@ Append to the bottom of [log.md](log.md). Every entry is `## [YYYY-MM-DD] <op> |
 ## [YYYY-MM-DD] query | general | How do the three papers disagree on scaling?
 ## [YYYY-MM-DD] lint | scoped | general, projects — 2 findings
 ## [YYYY-MM-DD] restructure | general, ml | Split ml/ out of general/
-## [YYYY-MM-DD] schema | AGENTS.md | Added a signal criterion for benchmark claims
+## [YYYY-MM-DD] schema | signal.md | Added a signal criterion for benchmark claims
 ```
 
 Scope is the partition for `ingest` and `query`, the platform for `feed`, `scoped` or `full`
 for `lint`, the partition(s) for `restructure`, the file changed for `schema`, and `repo` for
 `init`. Log a `query` only when its answer is filed as a page. Use `schema` for changes to
-this file, `preferences.md`, `lint.md`, `_templates/`, or `wiki/workflows/`.
+this file, `preferences.md`, `signal.md`, `lint.md`, `_templates/`, or `wiki/workflows/`.
 
 ## 10. Review commands
 
@@ -400,8 +383,7 @@ rule meant to last ("always…", "from now on…", "never…"), record it there 
 and log a `schema` entry. If unsure whether it's durable, ask. A new preference that
 contradicts an old one replaces it; the log keeps history.
 
-Change this file (partition rules, signal criteria, page conventions) only when the human
-asks.
+Change this file (partition rules, page conventions) only when the human asks.
 
 ## 12. Standing habits
 

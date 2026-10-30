@@ -1,25 +1,18 @@
----
-type: workflow
-partition: workflows
-created: 2026-10-29
-updated: 2026-10-29
-sources: []
-tags: [x, bookmarks, ingest, api, media, optional]
-status: active
----
-
-# Ingest X bookmarks (optional)
+# Ingest X bookmarks (example)
 
 Pull saved X bookmarks into the wiki as complete units — post, thread, top replies, quoted
 post, media, and external links — without re-fetching anything already captured.
 
-**Optional.** Skip this page unless you have connected the X API. Nothing else in the wiki
-depends on it.
+**An optional example, not tested by the template.** It lives outside `wiki/`, so lint
+ignores it. Use it only if you've connected the X API, and adapt it to your client. To make
+it part of your wiki's procedures, copy it into `wiki/workflows/` with workflow frontmatter
+and log a `schema` entry. [AGENTS.md](../AGENTS.md) §5.3 holds the rules it implements.
 
 ## When to use this
 
 The human asks to ingest X bookmarks, or to catch up on bookmarks saved since the last run.
-Not for pasted posts: those go through [ingest-pasted-text](ingest-pasted-text.md).
+Not for pasted posts: those go through
+[ingest-pasted-text](../wiki/workflows/ingest-pasted-text.md).
 
 ## Success and failure
 
@@ -73,20 +66,38 @@ a capture whose substance lived there; duplicates in `raw/` because the manifest
    them; frames can't carry speech, so record whether the frames captured the video fully,
    partly, or not at all. Delete the video files. → verify: no video files under `wiki/`.
 7. **External links.** Collect URLs from both the short text and the long-form body. Fetch
-   each with the escalation ladder in [ingest-url](ingest-url.md). → verify: each kept link
-   has real body text; a near-empty fetch is reported and skipped.
-8. **Route and classify.** Route by subject per the [registry](../partitions.md), never by
-   platform. A bookmark is **deep** when what was actually captured has a substantial body:
+   each with the escalation ladder in [ingest-url](../wiki/workflows/ingest-url.md).
+   → verify: each kept link has real body text; a near-empty fetch is reported and skipped.
+8. **Route and classify.** Route by subject per the [registry](../wiki/partitions.md),
+   never by platform. A bookmark is **deep** when what was actually captured has a substantial body:
    a long-form post, an attached article, a substantive linked page, or a demo fully captured
    in frames. Otherwise it's **shallow**. Prefer deep when another page already cites it.
 9. **Write `raw/`, then the manifest.** Deep bookmarks get
    `YYYY-MM-DD-x-<handle>-<slug>.md`, dated by the post's creation date, with sections in
    this fixed order so anchors stay predictable: `Post`, `Thread`, `Quoted post`, `Article`,
-   `Top replies`, `Media`, `Links`. Omit sections that are empty. Shallow bookmarks go into
-   `YYYY-MM-DD-HHMM-x-posts.md` per partition with `source: bookmarks`. → verify: one new
-   manifest entry per bookmark; the raw-integrity commands are empty.
-10. **Integrate, index, log** as in [ingest-url](ingest-url.md) step 6 onward: one `ingest`
-    entry per deep bookmark, one `feed` entry per digest batch. Then a scoped lint.
+   `Top replies`, `Media`, `Links`. Omit sections that are empty. Image descriptions go in
+   `[!capture-note]` blocks (AGENTS.md §5.1). Frontmatter is AGENTS.md §5.1's, with
+   `type: post` and `acquired_by: api`:
+
+   ```yaml
+   ---
+   title: <first line of the post, or the article title>
+   url: https://x.com/<handle>/status/<id>
+   author: "@<handle>"
+   published: <post created_at, YYYY-MM-DD>
+   fetched: <YYYY-MM-DD>
+   type: post
+   acquired_by: api
+   ---
+   ```
+
+   Shallow bookmarks go into `YYYY-MM-DD-HHMM-x-posts.md` per partition, from
+   `_templates/feed-digest.md` with `acquired_by: api` and one extra field,
+   `source: bookmarks`. → verify: one new manifest entry per bookmark; the raw-integrity
+   commands in AGENTS.md §10 print nothing.
+10. **Integrate, index, log** as in [ingest-url](../wiki/workflows/ingest-url.md) step 6
+    onward: one `ingest` entry per deep bookmark, one `feed` entry per digest batch. Then a
+    scoped lint.
 
 ## Failure modes
 

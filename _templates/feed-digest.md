@@ -3,7 +3,7 @@ title: <platform> posts — <YYYY-MM-DD> <HHMM>
 type: post
 platform: <x | linkedin | bluesky | mastodon | other>
 fetched: <YYYY-MM-DD>
-acquired_by: user | agent-search
+acquired_by: user | agent-search | api
 post_count: <n>
 high_signal: <n>
 ---
@@ -58,7 +58,7 @@ so consistency here is the difference between findable and lost.
   `x-post-1738291043`.
 - **Body text is verbatim.** No summarizing, no cleanup, no truncation. The digest is a
   captured source; summary belongs on the pages that cite it.
-- **`signal` records the verdict** from the rubric in `AGENTS.md` §6, so triage decisions stay
+- **`signal` records the verdict** from the rubric in `signal.md`, so triage decisions stay
   inspectable after the fact. When extraction feels wrong, tune the rubric rather than arguing
   with individual posts.
 
