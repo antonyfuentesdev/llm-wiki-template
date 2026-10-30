@@ -36,6 +36,6 @@ Judgments, opinions, open questions. Mark anything the agent contributed itself:
 
 ## Sources
 
-- [Source page](sources/<slug>.md)
+- [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md) · [summary](sources/<slug>.md)
 
 [^<slug>]: [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md)

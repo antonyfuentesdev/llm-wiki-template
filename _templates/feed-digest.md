@@ -2,7 +2,6 @@
 title: <platform> posts — <YYYY-MM-DD> <HHMM>
 type: post
 platform: <x | linkedin | bluesky | mastodon | other>
-partition: <partition>
 fetched: <YYYY-MM-DD>
 acquired_by: user | agent-search
 post_count: <n>

@@ -69,8 +69,8 @@ the transcript.
 4. **Extract the high-signal posts.** No source page. Update the topic and entity pages each
    post is relevant to, citing the anchor with the key `<platform>-post-<id>`.
    → verify: each high-signal post is cited at least once, or the report says why not.
-5. **Update the partition index's feed digest line for the month, the root index if page
-   counts changed, and log one `feed` entry for the whole batch.**
+5. **Update the partition index's feed digest line for the month, and log one `feed` entry
+   for the whole batch.**
 6. **Report** posts captured, high vs low, pages updated. **Run a scoped lint.**
 
 ## Failure modes

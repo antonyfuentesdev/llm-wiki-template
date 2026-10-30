@@ -48,7 +48,7 @@ candidate pages from those before opening any page body.
 5. **Offer to file it.** If the answer would be useful again, offer to save it as a question
    page. On yes: copy `_templates/question.md` into the partition the question is about,
    use keyed footnotes into raw files, link it from at least one related page, add it to the
-   partition index, update the root index count, and log a `query` entry.
+   partition index, and log a `query` entry.
 
 ## Question types
 

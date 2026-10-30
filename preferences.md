@@ -1,7 +1,8 @@
 # Preferences
 
 Your standing instructions to the agent. It reads this file at the start of every session,
-and it overrides the defaults in [AGENTS.md](AGENTS.md) where the two conflict.
+and it overrides the defaults in [AGENTS.md](AGENTS.md) where the two conflict. Two rules
+can't be overridden: raw sources stay append-only (§1), and claims stay cited (§7).
 
 You can edit this file by hand. The agent also adds to it when you state a rule meant to
 last ("from now on, write summaries in Spanish"), and replaces an entry when a new rule

@@ -133,6 +133,9 @@ Inside a partition, pages come in a few types:
   point them at the wrong file.
 - **The agent's own knowledge is labeled.** It can add what it knows or infers, inside a
   callout marked "Agent-inferred, not from a source".
+- **Pages are earned.** The agent creates a page for a person, tool, or idea when a source
+  discusses it substantively (a section or more, or it is central to the source), or when a
+  second source mentions it. A passing mention goes into an existing page's text.
 - **Disagreements stay visible.** When two sources conflict, both claims stay on the page,
   each with its citation. The agent doesn't pick a winner.
 - **Folders are subjects, not formats.** A thread about caching and a paper about caching go
@@ -328,30 +331,20 @@ times; the text it cites stays exactly as captured.
 **Every claim is traceable.** Footnotes point at the captured file, not at a summary of it.
 Anything the agent added from its own knowledge is labeled as such.
 
-**You review every change in git.** The agent leaves its work uncommitted. These commands
-split what changed in your pages from what came in as new source material:
+**You review every change in git.** The agent leaves its work uncommitted and hands you
+review commands that split what changed in your pages from what came in as new source
+material. For example:
 
 ```bash
-git add -N .
-
-# How did the synthesis change? (excludes captured sources)
-git diff -- 'wiki/' ':(exclude)wiki/*/raw/*'
-
-# What source material came in?
-git diff --stat -- 'wiki/*/raw/*'
-
-# Were any captured sources modified or deleted? Both must print nothing.
-git diff --name-only --diff-filter=MDR HEAD -- 'wiki/*/raw/*'
-git log --diff-filter=MDR -- 'wiki/*/raw/*'
+git add -N .                                   # include new files in the diff
+git diff -- 'wiki/' ':(exclude)wiki/*/raw/*'   # how the synthesis changed
 ```
 
-Small details matter here. `git add -N .` makes `git diff` include new files, which are most
-of an ingest. The trailing `/*` matters: `wiki/*/raw/` without it matches nothing and shows
-an empty, misleading result. `MDR` catches modifications, deletions, and renames; plain `M`
-would miss deletions.
+The full set, including the append-only integrity checks and the details that fail silently
+if changed, is in [AGENTS.md](AGENTS.md) §10.
 
-**There's a paper trail.** [log.md](log.md) records every ingest, query, health check, and
-structural change, one parseable line each:
+**There's a paper trail.** [log.md](log.md) records every ingest, feed batch, filed answer,
+health check, rule change, and structural change, one parseable line each:
 
 ```bash
 grep "^## \[" log.md | tail -20
@@ -361,7 +354,8 @@ grep "^## \[" log.md | tail -20
 
 **Add a partition.** Ask the agent ("Add a partition called `cooking` for recipes and food
 science"), or let it propose one during a lint when a group of related pages outgrows its
-folder. Partition rules are in [wiki/partitions.md](wiki/partitions.md). Good candidates name
+folder. Partition scopes are in [wiki/partitions.md](wiki/partitions.md); the rules are in
+[AGENTS.md](AGENTS.md) §3. Good candidates name
 a subject: `health`, `finance`, `machine-learning`, `parenting`. Bad candidates name a format
 or source: `articles`, `twitter`, `2026`.
 

@@ -55,8 +55,9 @@ captured — ask whether it's a re-capture before doing anything else.
 3. **Convert to markdown.** Keep headings, lists, code, tables, and figure captions in their
    original order. Remove site navigation, ads, and related-article lists. Add no commentary.
    For a PDF, keep the original binary next to the markdown with the same date-slug. For
-   images that carry content, save them with the date-slug prefix and describe them in the
-   markdown at the point they appear. → verify: section headings match the original.
+   images that carry content, save them with the date-slug prefix and describe each where it
+   appears, inside a `> [!capture-note] Agent description of <image-file>` block (AGENTS.md
+   §5.1). → verify: section headings match the original.
 4. **Choose the partition** the source is most about, per the registry. → verify: the
    registry's not-here line for that partition doesn't exclude it.
 5. **Write the raw file** with acquisition frontmatter. `unknown` for anything you can't
@@ -66,13 +67,15 @@ captured — ask whether it's a re-capture before doing anything else.
    where the slug is the raw file's minus its date. Cite into the raw file with the key
    `[^<slug>]`. List cited-but-unfollowed references under "Leads not followed".
    → verify: all template guidance prose is gone.
-7. **Cascade.** For each entity, concept, and topic the source substantively touches, update
-   the existing page or create one from its template. Rewrite topic theses rather than
+7. **Cascade.** Update every entity, concept, and topic page the source substantively
+   touches. Create a page from its template only per AGENTS.md §12 (see Page sprawl below).
+   Rewrite topic theses rather than
    appending. Record contradictions on both sides (AGENTS.md §7). Link across partitions
    where the subject warrants it. → verify: every page touched is listed under the source
    page's "What this changed in the wiki", and each has the raw file in `sources:`.
-8. **Update indexes and log.** Partition index entries, root index counts, `updated:` dates,
-   one `ingest` log entry per source. → verify: every new page is linked from its index.
+8. **Update indexes and log.** Partition index entries, the root index summary if the
+   partition's focus shifted, `updated:` dates, one `ingest` log entry per source.
+   → verify: every new page is in its index and has an inbound link from a non-index page.
 9. **Report, then run a scoped lint** ([lint-pass](lint-pass.md)). Include the review
    commands from AGENTS.md §10. → verify: the report lists anything skipped, and why.
 
@@ -86,7 +89,9 @@ captured — ask whether it's a re-capture before doing anything else.
   source page (AGENTS.md §5.1).
 - **A thin cascade.** Writing the source page and stopping. The source page is the receipt;
   the updates to topic and entity pages are the actual ingest.
-- **Page sprawl.** Creating a page for every name in the source. A passing mention goes in
-  the text of an existing page; it earns its own page when several sources discuss it.
+- **Page sprawl.** Creating a page for every name in the source. Create an entity or concept
+  page when a source discusses it substantively (a section or more, or it is central to the
+  source), or when a second source mentions it. A passing mention goes into an existing
+  page's text.
 - **Following leads.** A source's references are leads, not tasks. Note them; ingest nothing
   the human didn't ask for (AGENTS.md §5.4).

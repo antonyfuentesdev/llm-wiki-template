@@ -23,21 +23,7 @@ How to know the run worked or failed. Name the evidence, not a frozen command.
 
 ## First move
 
-Where to start. If the workflow depends on an external tool that hasn't been proven yet,
-discovery belongs here once; after a successful run, move the chosen tools into Proven stack
-and stop shopping.
-
-## Proven stack
-
-Required after a successful run that depended on external tools. Table of role → tool → why
-it earned the slot (what was tried, what was rejected). Agents use this stack; they do not
-re-select it. Omit this section when the workflow needs only the agent's built-in file,
-search, and fetch tools, or while it has never been proven. Do not paste install flags,
-versions, or last session's script — those come from live docs for the named tools.
-
-| Role | Tool | Why it is here |
-| --- | --- | --- |
-| <role> | **<tool>** | <proven / rejected alternatives> |
+Where to start: what to read, and what to check before touching anything.
 
 ## Preconditions
 
@@ -56,8 +42,9 @@ sequences.
 
 ## Failure modes
 
-What goes wrong in practice, and the first correct recovery. Add to this whenever a run
-surprises you.
+What goes wrong in practice, and the first correct recovery. When a run surprises you,
+propose an edit to this page; it changes only with the human's approval and a `schema` log
+entry (AGENTS.md §1).
 
 ## Notes
 

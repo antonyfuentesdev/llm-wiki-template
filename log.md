@@ -10,7 +10,10 @@ grep "^## \[.*\] restructure" log.md   # how the wiki's shape has changed
 ```
 
 Operations are `init`, `ingest` (one entry per deep source), `feed` (one entry per batch,
-never per post), `query`, `lint`, `restructure`, and `schema`. See [AGENTS.md](AGENTS.md) §9.
+never per post), `query` (only when the answer is filed as a page), `lint`, `restructure`,
+and `schema`. Scope is the partition, except: platform for `feed`, `scoped` or `full` for
+`lint`, the partition(s) for `restructure`, the file changed for `schema`, `repo` for `init`.
+See [AGENTS.md](AGENTS.md) §9.
 
 ---
 

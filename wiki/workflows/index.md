@@ -25,7 +25,7 @@ _None yet._
   exports as deep sources, or a batch of social posts as a feed digest.
 - [Answer a question](query.md) — route through the indexes, answer with citations to raw
   files, and file lasting answers as question pages.
-- [Run a lint pass](lint-pass.md) — scoped after every batch, full on request; report and
+- [Run a lint pass](lint-pass.md) — scoped after every ingest and feed batch, full on request; report and
   propose, never fix unasked.
 - [Ingest X bookmarks (optional)](x-bookmark-ingest.md) — pull saved X bookmarks as complete
   units through the X API, gated by a manifest so nothing is captured twice.

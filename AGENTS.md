@@ -7,7 +7,7 @@ This file is the contract. It works with any coding agent that can read and writ
 use whatever fetch and search tools your harness provides. Step-by-step procedures live in
 [wiki/workflows/](wiki/workflows/index.md). Rationale lives in [PLAN.md](PLAN.md). On any
 conflict, this file wins, except that [preferences.md](preferences.md) overrides its
-defaults.
+defaults. No preference can override §1 (append-only raw) or §7 (provenance).
 
 ---
 
@@ -25,11 +25,16 @@ Reuse what you've already read this session unless it may have changed.
 ## 1. The inviolable rule
 
 > **Any directory named `raw/` is append-only. Add files. Never edit them. Never delete
-> them.** Everything else under `wiki/` is derived and may be rewritten freely.
+> them.**
 
 A citation means nothing if the cited file no longer says what it said when the claim was
 made. A source that is wrong, truncated, or superseded is **not** overwritten: capture a new
 dated file and mark the old one superseded on its source page (§5.1).
+
+Everything else under `wiki/` is derived and may be rewritten freely, with two exceptions.
+`wiki/workflows/` pages are operating procedures, part of the schema like this file: change
+them only at the human's request or with their approval, and log a `schema` entry.
+`wiki/.bookmarks-manifest.json` only ever gains entries.
 
 ## 2. Layout
 
@@ -69,10 +74,10 @@ raw file and source page. Other partitions link across to it.
 
 Two gates, both required:
 
-1. **Mechanical trigger.** A *misfit* is a page that links to few or no other pages in its
-   own partition. Misfits that link to each other form a *cluster*. At **8 pages** a cluster
-   becomes a candidate partition. Clusters are intra-partition, so one partition's link
-   graph is enough to find them.
+1. **Mechanical trigger.** A *misfit* is a page with at most one link to another page in
+   its own partition, not counting index pages or the other pages of its cluster. Misfits
+   that link to each other form a *cluster*. At **8 pages** a cluster becomes a candidate
+   partition. Clusters are intra-partition, so one partition's link graph finds them.
 2. **Written topical case.** What it's about, why its host no longer fits, what would belong
    elsewhere. If you can't say that in a few sentences, drop the proposal: the cluster is an
    artifact of ingest order.
@@ -128,8 +133,10 @@ status: stub | active | stable
 When a batch touches a topic page, rewrite its thesis rather than appending to it.
 
 Copy the matching file from [_templates/](_templates/) and **delete its explanatory prose**;
-it's guidance for you, not wiki content. Drop sections that would stay empty, except
-`Sources` and the `_None._` markers on source pages.
+it's guidance for you, not wiki content. Drop sections that would stay empty. Keep the
+`Sources` section, and keep the `_None._` markers on source pages. A `Sources` section lists
+the raw files the page cites (feed digests included), each with a link to its source page
+when it has one.
 
 ### Names and links
 
@@ -147,7 +154,9 @@ it's guidance for you, not wiki content. Drop sections that would stay empty, ex
 | `<partition>/<page>.md` | `raw/2026-08/file.md` | `other-page.md` |
 | `<partition>/sources/<slug>.md` | `../raw/2026-08/file.md` | `../other-page.md` |
 
-- **Every page needs an inbound link.** A partition index entry counts.
+- **Every page needs an inbound link from a non-index page**, and a line in its partition
+  index. The index line is required but doesn't count: a page linked only from indexes is an
+  orphan.
 
 ## 5. Sources — three tiers
 
@@ -162,12 +171,20 @@ Procedures: [ingest-url](wiki/workflows/ingest-url.md),
 [ingest-pasted-text](wiki/workflows/ingest-pasted-text.md).
 
 Store the **full converted text**, never just a link; a rotted URL takes every citation with
-it. Keep the original's headings and order and add no commentary (that belongs on the source
-page).
+it. Keep the original's headings and order and add no commentary; that belongs on the source
+page. The one exception: describe each image that carries content at capture time, in a
+marked block, so model-written text never passes for source text:
+
+```markdown
+> [!capture-note] Agent description of 2026-08-06-caching-patterns-fig1.png
+> Bar chart of p99 latency for three cache strategies; write-behind is lowest.
+```
 
 **Path:** `wiki/<partition>/raw/YYYY-MM/YYYY-MM-DD-slug.md`, dated by capture date in the
-human's local time. Slug: three to six words from the title; append `-2` if taken. Before
-fetching, search `wiki/*/raw/` for the URL or title; on a hit, ask whether it's a re-capture.
+human's local time. Slug: three to six words from the title, unique across the partition's
+`sources/` and all of its `raw/` month folders; if a different source holds it, make yours
+more specific. Before fetching, search `wiki/*/raw/` for the URL or title; on a hit, ask
+whether it's a re-capture.
 
 **Acquisition frontmatter**, written once, never touched again:
 
@@ -180,21 +197,21 @@ published: 2026-07-14
 fetched: 2026-08-06
 type: article | pdf | transcript | note | chat | image
 acquired_by: user | agent-search | agent-followed-link
-partition: general
 ---
 ```
+
+No `partition:` field: the path records it, and a restructure would make it stale.
 
 - Use `unknown` for an author or date you can't find; never guess. Leave `url:` empty for
   pasted text with no origin. Strip tracking and auth parameters from URLs.
 - PDFs keep the original binary beside the extracted markdown, same date-slug. Transcripts
   may add `media:` naming the recording. Images share the raw file's date-slug prefix in the
-  same month folder; there is no shared assets tree. Describe any image that carries content
-  in the raw file at capture time, since it can't be edited later.
+  same month folder; there is no shared assets tree.
 - **If a fetch fails or looks degraded** (paywall stub, empty body, consent page, mostly
   navigation), report it and skip. Ask the human to paste the text. Never file it.
-- **Superseding.** One source page per source. On re-capture, the new raw file goes in
-  today's month folder; the source page cites it, lists both raw files in `sources:`, and
-  states which is superseded and why.
+- **Superseding.** One source page per source. A re-capture goes in today's month folder
+  with the slug suffixed `-v2` (then `-v3`). The source page keeps its original slug, cites
+  both raw files, lists both in `sources:`, and states which is superseded and why.
 
 ### 5.2 Feed sources
 
@@ -265,7 +282,7 @@ verdict goes in `signal:` so triage stays auditable.
 rewritten; raw files don't.
 
 **Footnote keys, never numbers.** The key is the raw file's slug with its date stripped
-(also the source page's slug). Numbers are positional, and pages are rewritten, so
+(also the source page's slug; a `-v2` re-capture gets its own key, `[^slug-v2]`). Numbers are positional, and pages are rewritten, so
 reordering silently re-points `[^2]` at a different file; a key fails loudly.
 
 ```markdown
@@ -299,18 +316,18 @@ Follow the matching workflow. The outcome is the same for all of them:
 
 1. Raw file(s) written per §5, before anything else. Nothing under `raw/` is touched again.
 2. For a deep source: a source page, then **every** entity, concept, and topic page it
-   touches updated or created. One source commonly touches ten or more pages; the cascade is
-   the work, not the source page. List them under the source page's "What this changed in
-   the wiki".
+   substantively touches updated, or created when §12 allows. One source commonly touches
+   ten or more pages; the cascade is the work, not the source page. List them under the
+   source page's "What this changed in the wiki".
 3. For a feed batch: high-signal posts update pages directly, cited by anchor; low-signal
    posts change nothing.
 4. Contradictions flagged (§7).
-5. Each touched partition index has one line per page (link, then a one-line summary); root
-   [index.md](index.md) counts and `updated:` dates are current.
+5. Each touched partition index has one line per page (link, then a one-line summary). If
+   a partition's focus shifted, rewrite its one-line summary in [index.md](index.md).
 6. One log entry per deep source or feed batch (never per post).
 7. Report: sources acquired, posts triaged high vs low, pages created and updated,
    contradictions, acquisitions skipped and why, plus the §10 review commands.
-8. Scoped lint, with findings appended to the report.
+8. Scoped lint ([lint.md](lint.md)), with findings appended to the report.
 
 **Don't commit** unless the human asks; they review with §10.
 
@@ -324,32 +341,31 @@ to file lasting answers as `question` pages (then index them and log a `query` e
 
 ### Lint
 
-Checklist: [lint.md](lint.md). Procedure: [lint-pass](wiki/workflows/lint-pass.md).
-
-- **Scoped**: automatic after every batch. Pages the batch created or modified, pages
-  linking to or from them, and a cluster check on the partitions touched.
-- **Full**: on request, everything. Suggest one when the last full pass in `log.md` is a few
-  weeks old.
+Checklist and the scope of each mode: [lint.md](lint.md). Procedure:
+[lint-pass](wiki/workflows/lint-pass.md). Scoped lint runs automatically after every ingest
+and every feed batch; full lint runs on request.
 
 **Report and propose. Never apply fixes without approval.** Lint is the only operation that
 may propose restructuring. Log one `lint` entry per pass.
 
 ## 9. Logging
 
-Append to the bottom of [log.md](log.md), always this header shape, with an optional body of
-one to three lines:
+Append to the bottom of [log.md](log.md). Every entry is `## [YYYY-MM-DD] <op> | <scope> |
+<detail>`, with an optional body of one to three lines:
 
 ```
 ## [YYYY-MM-DD] ingest | general | Caching Patterns at Scale
 ## [YYYY-MM-DD] feed | x | 24 posts → 3 high-signal, 6 pages updated
 ## [YYYY-MM-DD] query | general | How do the three papers disagree on scaling?
 ## [YYYY-MM-DD] lint | scoped | general, projects — 2 findings
-## [YYYY-MM-DD] restructure | split general/ into general/ and ml/
-## [YYYY-MM-DD] schema | Added a signal criterion for benchmark claims
+## [YYYY-MM-DD] restructure | general, ml | Split ml/ out of general/
+## [YYYY-MM-DD] schema | AGENTS.md | Added a signal criterion for benchmark claims
 ```
 
-Operations: `init`, `ingest`, `feed`, `query`, `lint`, `restructure`, `schema`. Use `schema`
-for changes to this file, `preferences.md`, `lint.md`, or `_templates/`.
+Scope is the partition for `ingest` and `query`, the platform for `feed`, `scoped` or `full`
+for `lint`, the partition(s) for `restructure`, the file changed for `schema`, and `repo` for
+`init`. Log a `query` only when its answer is filed as a page. Use `schema` for changes to
+this file, `preferences.md`, `lint.md`, `_templates/`, or `wiki/workflows/`.
 
 ## 10. Review commands
 
@@ -389,8 +405,10 @@ asks.
 
 ## 12. Standing habits
 
-- Prefer updating a page to creating a neighbor for it. A passing mention goes in an
-  existing page's text; it earns a page when several sources discuss it.
+- Prefer updating a page to creating a neighbor for it. Create an entity or concept page
+  when a source discusses it substantively (a section or more, or it is central to the
+  source), or when a second source mentions it. A passing mention goes into an existing
+  page's text.
 - Read only what you need. For `log.md`, take the tail of its headers
   (`grep "^## \[" log.md | tail -20`); for a long raw file, search for the passage.
 - Use `tmp/` for downloads and conversions. Nothing in it is committed, and nothing in the

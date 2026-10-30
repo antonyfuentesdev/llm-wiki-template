@@ -36,6 +36,6 @@ How well-supported this is, and what would sharpen it.
 
 ## Sources
 
-- [Source page](sources/<slug>.md)
+- [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md) · [summary](sources/<slug>.md)
 
 [^<slug>]: [<Source title>](raw/<YYYY-MM>/<YYYY-MM-DD>-<slug>.md)
