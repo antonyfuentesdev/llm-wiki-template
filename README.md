@@ -54,8 +54,8 @@ time, not yours.
 
 2. **Add the wiki to the workspace you already work in.** This is the best way to use it.
    Editors like Cursor let one workspace hold several folders. Add the wiki next to your
-   code repos, and every new chat in that workspace loads the wiki's `AGENTS.md` before you
-   type anything. The agent already knows what the wiki is and how to file into it, so you
+   code repos, and every new chat in that workspace loads the wiki's `AGENTS.md` along with your
+   first message. The agent already knows what the wiki is and how to file into it, so you
    never explain it. See [Use it from your everyday workspace](#use-it-from-your-everyday-workspace).
 
    Or open the wiki folder on its own. Cursor and Codex read `AGENTS.md` automatically.
@@ -90,9 +90,9 @@ That lands in [preferences.md](preferences.md), which the agent reads every sess
 ### Use it from your everyday workspace
 
 The wiki works best as one folder in a multi-folder workspace, next to the projects you
-are building. Each folder keeps its own repo and its own `AGENTS.md`. When you start a chat,
-the agent picks up the `AGENTS.md` of every folder in the workspace, so it already holds
-the wiki's rules.
+are building. Each folder keeps its own repo and its own `AGENTS.md`. When you send the first
+message of a chat, the agent receives the `AGENTS.md` of every folder in the workspace, so it
+holds the wiki's rules from its first reply.
 
 How that plays out:
 
