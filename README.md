@@ -48,17 +48,9 @@ time, not yours.
 
 ## Quickstart
 
-1. **Start a private copy with clean history.** Your wiki will hold personal material. On
-   GitHub, click **Use this template** (shown once the repo is flagged as a template) and
-   make the new repo private. Or clone without the template's history:
-
-   ```bash
-   git clone --depth 1 <template-url> my-wiki && cd my-wiki && rm -rf .git && git init
-   git add -A && git commit -m "Start from the LLM wiki template"
-   # then create an empty private repo on your git host and:
-   git remote add origin <your-private-repo-url>
-   git push -u origin main
-   ```
+1. **Start a private copy with clean history.** Your wiki will hold personal material, so
+   make it private and don't carry over the template's commits (GitHub's **Use this
+   template** button does this).
 
 2. **Add the wiki to the workspace you already work in.** This is the best way to use it.
    Editors like Cursor let one workspace hold several folders. Add the wiki next to your
